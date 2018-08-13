@@ -1,0 +1,7 @@
+#! /usr/bin/env ruby
+
+require_relative '../lib/server'
+
+Server.new(port: nil).start if ARGV.empty?
+
+Server.new(port: ARGV[1]).start if ARGV[0] == '-port' || ARGV[0] == '-p'
