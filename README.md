@@ -1,90 +1,91 @@
 # Simple HTTP Server
 
-A simple HTTP server with minimal features built with Ruby using the (Socket)[https://ruby-doc.org/stdlib-2.4.0/libdoc/socket/rdoc/Socket.html] class available in Ruby’s standard library.
+An experiment on building an http server from scratch.
 
-# Prerequisite
+This is a simple HTTP server with minimal features (obviously non spec compliant), built with Ruby using the [Socket](https://ruby-doc.org/stdlib-2.5.1/libdoc/socket/rdoc/Socket.html) class available in Ruby’s standard library.
 
-Install Ruby.
+# Prerequisites
+To run the server locally, you're going to need:
 
-# Start the server
+[Ruby](https://www.ruby-lang.org/en/documentation/installation/), I'm running version 2.5.1p57
 
-- Clone the repo and cd to the working directory
+# Getting started
+
+Clone the repo and `cd` to the working directory
 
 ```bash
-git clone
+git clone git@github.com:esteedqueen/simple-http-server.git
 
 cd simple-http-server
 ```
 
-- On the default port `4000`
+Start the server
+
+1. On the default port `4000`
 
 ```bash
 bin/start
 ```
 
-- On your preferred port
+OR
+
+2. Specify your preferred port using `-p` or `-port` flags
 
 ```bash
 bin/start -p 3000
-```
 
 OR
 
-```bash
-bin/start -p 8000
+bin/start -port 8000
 ```
 
 # Features
 
 ## Homepage
 
-- Via curl:
+Test via curl or open in browser:
 
 ```bash
 curl "127.0.0.1:4000/"
-```
 
-- Open in a browser:
+OR
 
-```bash
 open "127.0.0.1:4000/"
 ```
 
+
 ## Read content of existing file
-- Via curl:
+
+Test via curl or open in browser:
 
 ```bash
 curl "127.0.0.1:4000/hello.txt"
-```
 
-- Open in a browser:
+OR
 
-```bash
 open "127.0.0.1:4000/hello.txt"
 ```
 
-## Read executable file
-- Via curl:
+## Execute scripts in executable file
+
+Test via curl or open in browser:
 
 ```bash
 curl "127.0.0.1:4000/hello.rb"
-```
 
-- Open in a browser:
+OR
 
-```bash
 open "127.0.0.1:4000/hello.rb"
 ```
 
 ## Handle file not found
-- Via curl:
+
+Test via curl or open in browser:
 
 ```bash
 curl "127.0.0.1:4000/hello.py"
-```
 
-- Open in a browser:
+OR
 
-```bash
 open "127.0.0.1:4000/hello.py"
 ```
