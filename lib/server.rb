@@ -23,7 +23,7 @@ class Server
         connection = Connection.new(client_conn_socket)
 
         request = RequestParser.new(connection).request
-        Response.new(client_conn_socket, request)
+        Response.new(request, client_conn_socket).prepare
 
         sleep 1
         client_conn_socket.close
