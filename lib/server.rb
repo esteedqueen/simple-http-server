@@ -15,16 +15,19 @@ class Server
     socket.setsockopt(:SOL_SOCKET, :SO_REUSEADDR, true)
     socket.bind(Addrinfo.tcp('127.0.0.1', @port))
 
-    loop {
+    loop do
       socket.listen(0)
       p 'Server started: listening...'
 
-      client_conn_socket, _addr_info = socket.accept
-      connection = Connection.new(client_conn_socket)
+      Thread.start(socket.accept) do |client_conn_socket, _addr_info|
+        connection = Connection.new(client_conn_socket)
 
-      request = RequestParser.new(connection).request
-      Response.new(client_conn_socket, request)
-      client_conn_socket.close
-    }
+        request = RequestParser.new(connection).request
+        Response.new(client_conn_socket, request)
+
+        sleep 1
+        client_conn_socket.close
+      end
+    end
   end
 end
