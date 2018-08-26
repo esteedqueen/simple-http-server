@@ -29,7 +29,8 @@ class Response
   def parse_response(status_code, content)
     status_text = {
       200 => 'OK',
-      404 => 'Not Found'
+      404 => 'Not Found',
+      400 => 'Bad Request'
     }.fetch(status_code)
 
     @client_conn_socket.send("HTTP/1.1 #{status_code} #{status_text}\r\n", 0)

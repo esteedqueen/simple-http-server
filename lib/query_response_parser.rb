@@ -36,7 +36,7 @@ class QueryResponseParser
   end
 
   def retrieve_record(key, value)
-    throw_error unless key == 'key'
+    throw_error && return unless key == 'key'
 
     retrieved_value = @store.transaction { @store[value] }
     @content = "The value of #{value} is: #{retrieved_value}"
@@ -44,7 +44,7 @@ class QueryResponseParser
   end
 
   def throw_error
-    @content = 'Not supported'
-    @status_code = 500
+    @content = 'Request not supported'
+    @status_code = 400
   end
 end
