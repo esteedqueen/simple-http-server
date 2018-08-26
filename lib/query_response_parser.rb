@@ -1,10 +1,9 @@
-require 'pstore'
-
 class QueryResponseParser
+  @@store = {}
+
   def initialize(path, query)
     @path = path
     @query = query
-    @store = PStore.new('dbserver.pstore')
 
     parse
   end
@@ -30,7 +29,7 @@ class QueryResponseParser
   private
 
   def save_record(key, value)
-    @store.transaction { @store[key] = value }
+    @@store[key] = value
     @content = "#{key} has been stored."
     @status_code = 200
   end
@@ -38,8 +37,13 @@ class QueryResponseParser
   def retrieve_record(key, value)
     throw_error && return unless key == 'key'
 
-    retrieved_value = @store.transaction { @store[value] }
-    @content = "The value of #{value} is: #{retrieved_value}"
+    if @@store.key?(value)
+      retrieved_value = @@store[value]
+      @content = "The value of #{value} is: #{retrieved_value}"
+    else
+      @content = "There's no record for #{value}"
+    end
+
     @status_code = 200
   end
 
