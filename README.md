@@ -78,6 +78,29 @@ OR
 open "127.0.0.1:4000/hello.rb"
 ```
 
+## Query parsing
+
+### Store a record: `/set?somekey=somevalue`
+Test via curl or open in browser:
+
+```bash
+curl "127.0.0.1:4000/set?name=Bolatito"
+
+OR
+
+open "127.0.0.1:4000/set?name=Bolatito"
+```
+
+### Retrieve a record: `/get?key=somekey`
+
+```bash
+curl "127.0.0.1:4000/get?key=name"
+
+OR
+
+open "127.0.0.1:4000/get?key=name"
+```
+
 ## Handle file not found
 
 Test via curl or open in browser:
