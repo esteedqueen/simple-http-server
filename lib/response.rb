@@ -1,8 +1,12 @@
+require 'pstore'
+
 class Response
   def initialize(conn_sock, request)
     @conn_sock = conn_sock
     @request = request
-    @path = (Dir.getwd + @request.path).gsub!(/\.+/, '.')
+    @path = @request.path
+    @query = @request.query
+    @store = PStore.new('dbserver.pstore')
 
     response(@conn_sock)
   end
@@ -22,12 +26,10 @@ class Response
   end
 
   def response(client_conn_socket)
-    if root_path
-      load_homepage
-    elsif File.exist?(@path)
-      load_file
+    if !@query.nil?
+      handle_query_response
     else
-      load_404
+      handle_path_response
     end
 
     p "#{@request.method} #{@request.path} - #{@status_code}"
@@ -35,26 +37,64 @@ class Response
     parse_response(client_conn_socket, @status_code, @content)
   end
 
-  def root_path
+  def root_path?
     @path.nil?
   end
 
-  def load_homepage
+  def handle_homepage_response
     @content = File.binread('index.html')
     @status_code = 200
   end
 
-  def load_file
-    @content = if File.executable?(@path)
-                 `#{@path}`
+  def handle_file_response
+    @content = if File.executable?(file_path)
+                 `#{file_path}`
                else
-                 File.binread(@path)
+                 File.binread(file_path)
                end
     @status_code = 200
   end
 
-  def load_404
+  def handle_404_response
     @content = 'File not found'
     @status_code = 404
+  end
+
+  def file_path
+    (Dir.getwd + @path).gsub!(/\.+/, '.')
+  end
+
+  def handle_path_response
+    if root_path?
+      handle_homepage_response
+    elsif File.exist?(file_path)
+      handle_file_response
+    else
+      handle_404_response
+    end
+  end
+
+  def handle_query_response
+    query_method = @path.split('?')[0]
+    key, value = @query.split('=')
+
+    case query_method
+    when '/set'
+      save_record(key, value)
+    when '/get'
+      retrieve_record(value)
+    end
+  end
+
+  def save_record(key, value)
+    @store.transaction { @store[key] = value }
+    @content = 'Saved'
+    @status_code = 200
+  end
+
+  def retrieve_record(value)
+    retrieved_value = @store.transaction { @store[value] }
+    @content = "The value is #{retrieved_value}"
+    @status_code = 200
   end
 end
