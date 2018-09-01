@@ -11,10 +11,14 @@ class QueryResponseParser
   def parse
     query_method = @path.split('?')[0]
     key, value = @query.split('=')
+    # /set?name=Dave&age=78
+    arr = @query.split('&').map { |e| e.split('=') }
 
     case query_method
     when '/set'
-      save_record(key, value)
+      arr.each do |e|
+        save_record(e[0], e[1])
+      end
     when '/get'
       retrieve_record(key, value)
     else

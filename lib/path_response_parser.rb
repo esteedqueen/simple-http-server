@@ -45,6 +45,6 @@ class PathResponseParser
   end
 
   def root_path?
-    @path.nil?
+    file_path.nil?
   end
 end
