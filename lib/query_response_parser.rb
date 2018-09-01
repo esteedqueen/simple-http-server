@@ -16,9 +16,12 @@ class QueryResponseParser
 
     case query_method
     when '/set'
+      another_arr = []
       arr.each do |e|
         save_record(e[0], e[1])
+        another_arr << @content1
       end
+      @content = another_arr.map { |e| e }.join(',')
     when '/get'
       retrieve_record(key, value)
     else
@@ -34,7 +37,7 @@ class QueryResponseParser
 
   def save_record(key, value)
     @@store[key] = value
-    @content = "#{key} has been stored."
+    @content1 = "#{key} has been stored."
     @status_code = 200
   end
 
