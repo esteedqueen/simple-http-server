@@ -10,19 +10,13 @@ class QueryResponseParser
 
   def parse
     query_method = @path.split('?')[0]
-    key, value = @query.split('=')
     # /set?name=Dave&age=78
-    arr = @query.split('&').map { |e| e.split('=') }
-
     case query_method
     when '/set'
-      another_arr = []
-      arr.each do |e|
-        save_record(e[0], e[1])
-        another_arr << @content1
-      end
-      @content = another_arr.map { |e| e }.join(',')
+      query_key_values = @query.split('&').map { |e| e.split('=') }
+      save_record(query_key_values)
     when '/get'
+      key, value = @query.split('=')
       retrieve_record(key, value)
     else
       throw_error
@@ -35,22 +29,35 @@ class QueryResponseParser
 
   private
 
-  def save_record(key, value)
-    @@store[key] = value
-    @content1 = "#{key} has been stored."
-    @status_code = 200
-  end
-
   def retrieve_record(key, value)
     throw_error && return unless key == 'key'
 
-    if @@store.key?(value)
-      retrieved_value = @@store[value]
-      @content = "The value of #{value} is: #{retrieved_value}"
-    else
-      @content = "There's no record for #{value}"
-    end
+    values = value.split('&')
+    content_collection = []
 
+    values.each do |e|
+      if @@store.key?(e)
+        retrieved_value = @@store[e]
+        @some_content = "The value of #{e} is: #{retrieved_value}"
+      else
+        @some_content = "There's no record for #{e}"
+      end
+      content_collection << @some_content
+    end
+    @content = content_collection.map { |e| e }.join(', ')
+    @status_code = 200
+  end
+
+  def save_record(query_key_values)
+    content_collection = []
+    query_key_values.each do |e|
+      key = e[0]
+      value = e[1]
+      @@store[key] = value
+      @some_content = "#{key} has been stored"
+      content_collection << @some_content
+    end
+    @content = content_collection.map { |e| e }.join(', ')
     @status_code = 200
   end
 
